@@ -1,0 +1,19 @@
+# Ignore Tcl bytecode files
+*.tbc
+
+# Ignore Tcl backup files
+*.bak
+
+# Ignore Tcl temporary files
+*.tmp
+
+# Ignore common IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
