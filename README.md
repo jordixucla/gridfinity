@@ -1,6 +1,6 @@
 # Gridfinity
 
-This project contains Tcl scripts for the Gridfinity project.
+This project contains Tcl scripts for the Gridfinity project. For more information, visit the [Gridfinity website](https://gridfinity.xyz).
 
 ## Getting Started
 
@@ -30,3 +30,8 @@ If you would like to contribute to this project, please fork the repository and 
 ## License
 
 This project is licensed under the MIT License.
+
+## Gridfinity basics
+
+![Gridfinity Design Reference](img/spec_draft_willtree8.jpg)
+This geometries are created with script draw_scripts/basics.tcl
