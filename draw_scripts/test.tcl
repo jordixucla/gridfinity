@@ -17,3 +17,21 @@ set d [expr {$base_bottom_fillet * 2}]
 profile p P 0 -1 0 1 0 0  O [expr {$base_length - $disp}] $r2 0  T $base_bottom_fillet $base_bottom_fillet  Y $base_mid_height  T $base_upper_fillet $base_upper_fillet Y -$base_height  X -[expr {$base_bottom_fillet + $base_upper_fillet}] W
 
 pipe baseplate b p
+
+for {set i 0} {$i < 2} {incr i} {
+    for {set j 0} {$j < 2} {incr j} {
+        set name [format "r%d%d" $i $j]
+        set x [expr {$i * 42}]
+        set y [expr {$j * 42}]
+        copytranslate $name baseplate $x $y 0
+        mkvolume v$name $name
+    }
+}
+
+bfuse m vr00 vr01 
+bfuse m m vr10
+bfuse m m vr11
+checkshape m
+
+incmesh m .1
+writestl m baseplate.stl
