@@ -1,3 +1,5 @@
+autodisplay 0
+
 # Baseplate
 set base_length 42
 set base_diameter 8 
@@ -14,24 +16,40 @@ set disp [expr {$base_bottom_fillet + $base_upper_fillet}]
 profile b P 0 0 1 1 0 0  F $r2 0 X $base_straight C $r2 90   Y $base_straight C $r2  90  X -$base_straight   c $r2  90 Y -$base_straight  c $r2 90 W
 
 set d [expr {$base_bottom_fillet * 2}]
-profile p P 0 -1 0 1 0 0  O [expr {$base_length - $disp}] $r2 0  T $base_bottom_fillet $base_bottom_fillet  Y $base_mid_height  T $base_upper_fillet $base_upper_fillet Y -$base_height  X -[expr {$base_bottom_fillet + $base_upper_fillet}] W
+profile p P 0 -1 0 1 0 0  \
+O [expr {$base_length - $disp}] $r2 0 \
+T $base_bottom_fillet $base_bottom_fillet \
+Y $base_mid_height \
+T $base_upper_fillet $base_upper_fillet  \
+T $base_upper_fillet -$base_upper_fillet  \
+Y -$base_mid_height \
+T $base_bottom_fillet -$base_bottom_fillet \
+X -[expr {$base_bottom_fillet + $base_upper_fillet}] \
+W
 
-pipe baseplate b p
+mkplane fp p
+pipe bp b fp
 
-for {set i 0} {$i < 2} {incr i} {
-    for {set j 0} {$j < 2} {incr j} {
+for {set i 0} {$i < 3} {incr i} {
+    for {set j 0} {$j < 5} {incr j} {
         set name [format "r%d%d" $i $j]
         set x [expr {$i * 42}]
         set y [expr {$j * 42}]
-        copytranslate $name baseplate $x $y 0
-        mkvolume v$name $name
+        copytranslate v$name bp $x $y 0
     }
 }
 
 bfuse m vr00 vr01 
-bfuse m m vr10
-bfuse m m vr11
-checkshape m
+for {set i 0} {$i < 3} {incr i} {
+    for {set j 0} {$j < 5} {incr j} {
+        bfuse m m [format "vr%d%d" $i $j]
+    }
+}
 
-incmesh m .1
-writestl m baseplate.stl
+box c 42*3 42*5 10
+bop c m
+bopcommon baseplate 
+
+autodisplay 1
+incmesh baseplate .1
+writestl baseplate baseplate.stl
