@@ -4,11 +4,16 @@
 # Define a variable to store the length
 set length 41.5
 set diameter 7.5
-set height 7
+set height 5
+set unit_height 7
 
 set profile_bottom_fillet 0.8
 set profile_mid_height 1.8
 set profile_upper_fillet 2.15
+
+set rows 3
+set columns 1
+set units 2 
 
 profile b P 0 0 1 1 0 0   T 0 $length  T $length 0 T 0 -$length W
 profile p P 0 -1 0 1 0 0 F $length 0  T 0.8 0.8   Y 1.8  T 2.15 2.15  WW
@@ -29,13 +34,29 @@ pipe r b p
 mkplane fb b
 mkplane fb2 b2
 sewing base r fb fb2 pb2 
+mkvolume base base
 
-# # Creating a copy of the shape
-# copytranslate r3 r2 41.5 0 0
+# creating a 4x4 plate
+box c 42*$rows 42*$columns [expr {2 + $unit_height*$units}]
+explode c e
+blend bc c $r2 c_1 $r2 c_3 $r2 c_5 $r2 c_7
+explode bc f
+offsetcompshape bc bc -1 bc_2 
+ttranslate bc -.25 -.25 [expr {$unit_height - 2}]
 
-# # Create the volumes and fuse them
-# mkvolume v2 r2
-# mkvolume v3 r3
+set bx_list {}
+for {set i 0} {$i < $rows} {incr i} {
+    for {set j 0} {$j < $columns} {incr j} {
+        set name [format "b%d_%d" $i $j]
+        set x [expr {$i * 42}]
+        set y [expr {$j * 42}]
+        copytranslate v$name base $x $y 0
+        lappend bx_list v$name
+    }
+}
+compound  {*}$bx_list base
 
-# bfuse x v2 v3
-# checkshape x
+bfuse plate base bc
+
+# save the file to stl
+writestl plate  [eval format "plate_%d_%d_%d.stl" $rows $columns $units]
