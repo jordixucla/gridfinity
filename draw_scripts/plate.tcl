@@ -44,7 +44,9 @@ sewing base r fb fb2 pb2
 mkvolume base base
 
 # creating a rows x columns units plate
-box c 42*$rows 42*$columns [expr {2 + $unit_height*$units}]
+set blength [expr {$base_length*$rows}]
+set bwidth [expr {$base_length*$columns}]
+box c $blength $bwidth [expr {2 + $unit_height*$units}]
 ttranslate c -.25 -.25 [expr {$unit_height - 2}]
 explode c e
 set r2 [expr {$base_diameter/2}]
@@ -81,8 +83,8 @@ set bx_list {}
 for {set i 0} {$i < $rows} {incr i} {
     for {set j 0} {$j < $columns} {incr j} {
         set name [format "b%d_%d" $i $j]
-        set x [expr {$i * 42}]
-        set y [expr {$j * 42}]
+        set x [expr {$i * $base_length}]
+        set y [expr {$j * $base_length}]
         copytranslate v$name base $x $y 0
         lappend bx_list v$name
     }
