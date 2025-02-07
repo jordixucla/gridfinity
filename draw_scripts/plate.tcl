@@ -23,7 +23,7 @@ set base_mid_height 1.8
 set base_upper_fillet 2.15
 
 set rows 1
-set columns 1
+set columns 2
 set units 4 
 
 # Create a base unit
@@ -40,8 +40,12 @@ set d [expr {$profile_bottom_fillet * 2}]
 profile unit_section  P 0 -1 0 1 0 0  O $length $r2 [expr {$profile_bottom_fillet + $profile_upper_fillet + $profile_mid_height}]  T -$profile_upper_fillet -$profile_upper_fillet  Y -$profile_mid_height  T -$profile_bottom_fillet -$profile_bottom_fillet  WW
 pipe r unit_path unit_section
 mkplane fb unit_path
-sewing base r fb fb2 pb2 
-mkvolume base base
+sewing base_unit r fb fb2 pb2 
+mkvolume base_unit base_unit
+
+# holes
+source holes.tcl
+bcut base_unit base_unit holes
 
 # creating a rows x columns units plate
 set blength [expr {$base_length*$rows}]
@@ -53,6 +57,20 @@ set r2 [expr {$base_diameter/2}]
 blend bc c $r2 c_1 $r2 c_3 $r2 c_5 $r2 c_7
 explode bc f
 offsetcompshape bc bc -1 bc_2 
+
+# merging alltogether
+set bx_list {}
+for {set i 0} {$i < $rows} {incr i} {
+    for {set j 0} {$j < $columns} {incr j} {
+        set name [format "b%d_%d" $i $j]
+        set x [expr {$i * $base_length}]
+        set y [expr {$j * $base_length}]
+        copytranslate v$name base_unit $x $y 0
+        lappend bx_list v$name
+    }
+}
+compound  {*}$bx_list base
+bfuse plate base bc
 
 # # create the stacking lip
 set lp [expr {$base_length*$rows - $base_diameter}]
@@ -77,26 +95,11 @@ ttranslate lip_path -.25 -.25 [expr {$unit_height*($units+1)}]
 ttranslate lip_section -.25 -.25 [expr {$unit_height*($units+1)}]
 pipe lip lip_path lip_section
 
-
-# merging alltogether
-set bx_list {}
-for {set i 0} {$i < $rows} {incr i} {
-    for {set j 0} {$j < $columns} {incr j} {
-        set name [format "b%d_%d" $i $j]
-        set x [expr {$i * $base_length}]
-        set y [expr {$j * $base_length}]
-        copytranslate v$name base $x $y 0
-        lappend bx_list v$name
-    }
-}
-compound  {*}$bx_list base
-
-bfuse r base bc
-bfuse plate r lip
+bfuse plate plate lip
 
 autodisplay 1
 display plate
 
 # save the file to stl
-# incmesh plate .1
-# writestl plate  [eval format "plate_%dx%dx%d.stl" $rows $columns $units]
+incmesh plate .1
+writestl plate  [eval format "plate_%dx%dx%d.stl" $rows $columns $units]
