@@ -1,16 +1,6 @@
 autodisplay 0
 
-# Baseplate
-set base_length 42
-set base_diameter 8 
-set base_height 5
-
-set base_bottom_fillet 0.7
-set base_mid_height 1.8
-set base_upper_fillet 2.15
-
-set rows 4
-set columns 2
+source configure.tcl
 
 #grid path
 set base_straight [expr {$base_length - $base_diameter}]

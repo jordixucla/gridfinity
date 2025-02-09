@@ -1,5 +1,4 @@
-set rows 2
-set columns 1
+source configure.tcl
 
 set sx [expr {$base_length*$rows - $base_diameter -.5}]
 set sy [expr {$base_length*$columns - $base_diameter -.5}]

@@ -1,15 +1,10 @@
-set length 41.5
-set separation 7.75
-set magnet_hole_radius 3.5
-set magnet_hole_heigth 2.2
-set screw_hole_radius 1.5
-set holes_height 2.6
+source configure.tcl
 
 # create 4 holes
-pcylinder h2 $magnet_hole_radius $magnet_hole_heigth
+pcylinder h $magnet_hole_radius $magnet_hole_heigth
 pcylinder h1 $screw_hole_radius 4  
 ttranslate h1 0 0 .5
-bfuse h h1 h2
+if {$use_screws == 1} {bfuse h h1 h}
 
 set delta [expr {$length - $separation}]
 copytranslate h1 h $separation $separation 0

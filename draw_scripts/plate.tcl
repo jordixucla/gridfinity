@@ -2,29 +2,7 @@
 # pload ALL
 autodisplay 0
 
-# Define a variable to store the length
-set length 41.5
-set diameter 7.5
-set height 5
-set unit_height 7
-
-set profile_bottom_fillet 0.8
-set profile_mid_height 1.8
-set profile_upper_fillet 2.15
-
-set stacking_upper_fillet 1.9
-
-set base_length 42
-set base_diameter 8 
-set base_height 5
-
-set base_bottom_fillet 0.7
-set base_mid_height 1.8
-set base_upper_fillet 2.15
-
-set rows 1
-set columns 2
-set units 4 
+source configure.tcl
 
 # Create a base unit
 set profile_straight [expr {$length - $diameter}]
@@ -44,8 +22,10 @@ sewing base_unit r fb fb2 pb2
 mkvolume base_unit base_unit
 
 # holes
-source holes.tcl
-bcut base_unit base_unit holes
+if {$use_magnets == 1 || $use_screws == 1} {
+    source holes.tcl
+    bcut base_unit base_unit holes
+}
 
 # creating a rows x columns units plate
 set blength [expr {$base_length*$rows}]
@@ -102,4 +82,8 @@ display plate
 
 # save the file to stl
 incmesh plate .1
-writestl plate  [eval format "plate_%dx%dx%d.stl" $rows $columns $units]
+set options ".stl"
+if {$use_magnets == 1} {set options "_magnets$options"} 
+if {$use_lip == 1} {set options "_lip$options"} 
+if {$use_screws == 1} {set options "_screws$options"} 
+writestl plate  [eval format "plate_%dx%dx%d%s" $rows $columns $units $options]
