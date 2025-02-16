@@ -25,9 +25,11 @@ mkplane fp grid_profile
 pipe bp grid_path fp
 
 # add holes
-source holes.tcl
-ttranslate bp 0 0 $holes_height
-bfuse bp bp base_holes
+if {$use_magnets == 1 || $use_screws == 1} {
+    source holes.tcl
+    ttranslate bp 0 0 $holes_height
+    bfuse bp bp base_holes
+}
 
 # creating a rows x columns units plate
 for {set i 0} {$i < $rows} {incr i} {
@@ -50,6 +52,17 @@ box c $base_length*$rows $base_length*$columns 10
 bop c m
 bopcommon baseplate 
 
+# Create custom spacer in the plate
+if {$use_spacer == 1} {
+    box spacer $spacer_row $spacer_col $spacer_height
+    box spacer2 [expr {$rows*$base_length}] [expr {$columns*$base_length}] $spacer_height
+    bcut spacer spacer spacer2
+    bfuse baseplate baseplate spacer
+}
+
 autodisplay 1
 incmesh baseplate .1
-writestl baseplate  [eval format "baseplate_%dx%d.stl" $rows $columns]
+set options ".stl"
+if {$use_magnets == 1} {set options "_magnets$options"} 
+if {$use_screws == 1} {set options "_screws$options"} 
+writestl baseplate  [eval format "baseplate_%dx%d%s.stl" $rows $columns $options]

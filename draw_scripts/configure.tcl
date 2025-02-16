@@ -22,12 +22,17 @@ set separation 7.75
 set magnet_hole_radius 3.5
 set magnet_hole_heigth 2.2
 set screw_hole_radius 1.5
-set holes_height 2.6
+set holes_height 2.5
 
-set rows 1
-set columns 1
+set rows 4
+set columns 4
 set units 4 
-set use_magnets 1
+set use_magnets 0
 set use_screws 0
 set use_lip 1
+
+set use_spacer 1
+set spacer_row 176
+set spacer_col 176
+set spacer_height 1
 
