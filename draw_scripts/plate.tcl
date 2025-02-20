@@ -86,4 +86,8 @@ set options ".stl"
 if {$use_magnets == 1} {set options "_magnets$options"} 
 if {$use_lip == 1} {set options "_lip$options"} 
 if {$use_screws == 1} {set options "_screws$options"} 
+
+set curdir [eval pwd]
+cd $output_path
 writestl plate  [eval format "plate_%dx%dx%d%s" $rows $columns $units $options]
+cd $curdir

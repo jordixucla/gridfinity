@@ -65,4 +65,9 @@ incmesh baseplate .1
 set options ".stl"
 if {$use_magnets == 1} {set options "_magnets$options"} 
 if {$use_screws == 1} {set options "_screws$options"} 
+if {$use_spacer == 1} {set options "_spacer$options"} 
+
+set curdir [eval pwd]
+cd $output_path
 writestl baseplate  [eval format "baseplate_%dx%d%s.stl" $rows $columns $options]
+cd $curdir
