@@ -53,29 +53,31 @@ compound  {*}$bx_list base
 bfuse plate base bc
 
 # # create the stacking lip
-set lp [expr {$base_length*$rows - $base_diameter}]
-set wp [expr {$base_length*$columns - $base_diameter}]
-profile lip_path P 0 0 1 1 0 0  \
-F $r2 0 \
-X $lp C $r2 90 \
-Y $wp C $r2 90 \
-X -$lp C $r2 90 \
-Y -$wp C $r2 90 W
+if {$use_lip == 1} {
+    set lp [expr {$base_length*$rows - $base_diameter}]
+    set wp [expr {$base_length*$columns - $base_diameter}]
+    profile lip_path P 0 0 1 1 0 0  \
+    F $r2 0 \
+    X $lp C $r2 90 \
+    Y $wp C $r2 90 \
+    X -$lp C $r2 90 \
+    Y -$wp C $r2 90 W
 
-profile lip_section  P 0 -1 0 1 0 0  \
-O [expr {$lp + $base_diameter }] $r2 0 \
-Y [expr {$stacking_upper_fillet + $base_mid_height + $base_bottom_fillet}]  \
-T -$stacking_upper_fillet -$stacking_upper_fillet \
-Y -$base_mid_height \
-T -$base_bottom_fillet -$base_bottom_fillet  \
-TT 0 -1 W
-mkplane lip_section lip_section
+    profile lip_section  P 0 -1 0 1 0 0  \
+    O [expr {$lp + $base_diameter }] $r2 0 \
+    Y [expr {$stacking_upper_fillet + $base_mid_height + $base_bottom_fillet}]  \
+    T -$stacking_upper_fillet -$stacking_upper_fillet \
+    Y -$base_mid_height \
+    T -$base_bottom_fillet -$base_bottom_fillet  \
+    TT 0 -1 W
+    mkplane lip_section lip_section
 
-ttranslate lip_path -.25 -.25 [expr {$unit_height*($units+1)}]
-ttranslate lip_section -.25 -.25 [expr {$unit_height*($units+1)}]
-pipe lip lip_path lip_section
+    ttranslate lip_path -.25 -.25 [expr {$unit_height*($units+1)}]
+    ttranslate lip_section -.25 -.25 [expr {$unit_height*($units+1)}]
+    pipe lip lip_path lip_section
 
-bfuse plate plate lip
+    bfuse plate plate lip
+}
 
 autodisplay 1
 display plate
