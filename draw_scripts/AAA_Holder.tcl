@@ -48,5 +48,5 @@ fit
 set curdir [eval pwd]
 cd $output_path
 incmesh AAA_holder .1
-writestl AAA_holder [eval format "AA_holder_%dx%d.stl" $rows $columns] 
+writestl AAA_holder [eval format "AAA_holder_%dx%d.stl" $rows $columns] 
 cd $curdir
