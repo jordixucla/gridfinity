@@ -37,4 +37,5 @@ set spacer_col 150
 set spacer_height 1
 
 # set output_path "D:/jordi/OneDrive/Makespace/3Dprint/Gridfinity/opencascade gridfinity"
-set output_path "D:/tmp"
+# set output_path "D:/tmp"
+set output_path "~/tmp"
